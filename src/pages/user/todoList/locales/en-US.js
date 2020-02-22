@@ -1,0 +1,16 @@
+export default {
+  'Add':'Add',
+  'All': 'All',
+  'Active': 'Active',
+  'Completed': 'Completed',
+  'clearCompleted' :'clearCompleted',
+  'Delete':'Delete',
+  'items-left':'items left',
+  'Sure to delete?':'Sure to delete?',
+  'What-needs-to-be-done':'What needs to be done',
+  'delete-event-success':'Delete event success',
+  'add-event-success':'Add event success',
+  'update-event-success':'Edit event success',
+  'change-eventstatus-success':'Change event status success',
+  'clear-completed-success':'Clear completed events success',
+};

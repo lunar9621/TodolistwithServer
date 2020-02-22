@@ -1,0 +1,16 @@
+export default {
+  'All': '全部',
+  'Active': '未完成',
+  'Completed': '已完成',
+  'Add':'添加',
+  'clearCompleted' :'刪除已完成事件',
+  'Delete':'刪除',
+  'items-left':'項剩餘',
+  'Sure to delete?':'確定刪除?',
+  'What-needs-to-be-done':'填寫需要做的事件',
+  'delete-event-success':'删除事件成功',
+  'add-event-success':'添加事件成功',
+  'update-event-success':'编辑事件成功',
+  'change-eventstatus-success':'改变事件状态成功',
+  'clear-completed-success':'删除已完成事件成功',
+};
