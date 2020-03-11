@@ -13,4 +13,6 @@ export default {
   'update-event-success':'Edit event success',
   'change-eventstatus-success':'Change event status success',
   'clear-completed-success':'Clear completed events success',
+  'Sure to clear completed event?':'Sure to clear completed event?',
+  'No completed events':'No completed events',
 };

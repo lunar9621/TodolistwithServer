@@ -13,4 +13,6 @@ export default {
   'update-event-success':'编辑事件成功',
   'change-eventstatus-success':'改变事件状态成功',
   'clear-completed-success':'删除已完成事件成功',
+  'Sure to clear completed event?':'确定删除已完成事件?',
+  'No completed events':'暂无已完成事件',
 };

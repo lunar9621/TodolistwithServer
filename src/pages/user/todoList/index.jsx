@@ -23,11 +23,15 @@ class TodoList extends Component {
     status: 0,
   };
   columns = [{
+    title:'事件名称',
+    align:'center',
     dataIndex: 'name',
     width: '60%',
     editable: true,
   },
   {
+    title:'操作',
+    align:'center',
     dataIndex: 'operation',
     width: '20%',
     render: (text, record) =>
@@ -41,12 +45,13 @@ class TodoList extends Component {
   }]
 
   componentDidMount() {
-    const { dispatch, eventList } = this.props;
+    let { dispatch} = this.props;
     let tmpselectedRowKeys = [], flag = 0;
     dispatch({
       type: 'todos/fetchEventList',
       payload: 0,
       callback: () => {
+        let {eventList}=this.props;
         for (let i = 0; i < eventList.length; i++) {
           if (eventList[i].done === true) {
             tmpselectedRowKeys.push(flag);
@@ -86,19 +91,20 @@ class TodoList extends Component {
   };
 
   reloadHandler = (dispatch) => {
-    const { status } = this.state;
-    const { eventList } = this.props;
+    let { status } = this.state;
     let tmpselectedRowKeys = [], flag = 0;
     dispatch({
       type: 'todos/fetchEventList',
       payload: status,
       callback: () => {
+        let { eventList } = this.props;
         for (let i = 0; i < eventList.length; i++) {
           if (eventList[i].done === true) {
             tmpselectedRowKeys.push(flag);
           }
           flag++;
         }
+        console.log("tmpselectedkeys",tmpselectedRowKeys);
         this.setState({
           selectedRowKeys: tmpselectedRowKeys,
         });
@@ -108,7 +114,7 @@ class TodoList extends Component {
   }
 
   addEvent = value => {
-    const { dispatch, eventList } = this.props;
+    let { dispatch, eventList } = this.props;
     let maxIndex = eventList.length != 0 ? eventList[eventList.length - 1].index + 1 : 0;
     let params = {
       index: maxIndex,
@@ -164,7 +170,7 @@ class TodoList extends Component {
 
   onChange = e => {
     console.log(`radio checked:${e.target.value}`);
-    const { dispatch, eventList } = this.props;
+    let { dispatch} = this.props;
     let tmpselectedRowKeys = [], flag = 0;
     let status;
     if (e.target.value == 'a') {
@@ -174,21 +180,22 @@ class TodoList extends Component {
     } else {
       status = 2;
     }
-    this.setState({
-      status,
-    });
     dispatch({
       type: 'todos/fetchEventList',
       payload: status,
       callback: () => {
+        let { eventList } = this.props;
         for (let i = 0; i < eventList.length; i++) {
-          if (this.props.eventList[i].done === true) {
+          console.log("i",eventList[i]);
+          if (eventList[i].done === true) {
             tmpselectedRowKeys.push(flag);
           }
           flag++;
         }
+        console.log("tmpselected",tmpselectedRowKeys);
         this.setState({
           selectedRowKeys: tmpselectedRowKeys,
+          status,
         });
       }
     })
@@ -248,11 +255,13 @@ class TodoList extends Component {
 
   render() {
     const { selectedRowKeys } = this.state;
-    const { eventList, loading } = this.props;
+    const { eventList, loading,activeLength,completedLength } = this.props;
     const { getFieldDecorator } = this.props.form;
     console.log("render", eventList);
     const rowSelection = {
       selectedRowKeys,
+      columnTitle: '完成情况',
+      columnWidth: '20%',
       onSelect: this.onSelectChange,
       getCheckboxProps: record => ({
         done: false,
@@ -282,40 +291,49 @@ class TodoList extends Component {
     return (
       <div className={styles.main}>
         <Form>
-          <Form.Item style={{ margin: 0 }}>
-            {getFieldDecorator('input')(
-              <Search
-                placeholder={formatMessage({
-                  id: 'What-needs-to-be-done',
-                })}
-                enterButton={formatMessage({
-                  id: 'Add',
-                })}
-                size="large"
-                onSearch={value => this.addEvent(value)}
-              />)}
-          </Form.Item>
-          <Table
-            loading={loading}
-            components={components}
-            rowClassName={() => 'editable-row'}
-            showHeader={false}
-            bordered={false}
-            pagination={false}
-            scroll={{ y: 400 }}
-            dataSource={eventList}
-            columns={columns}
-            rowSelection={rowSelection}
-          />
-          <span>{eventList.length}<FormattedMessage id="items-left" /></span>
-          <Radio.Group onChange={this.onChange} defaultValue="a" style={{ display: 'inline-block', marginLeft: "10px" }}>
-            <Radio.Button value="a"><FormattedMessage id="All" /></Radio.Button>
-            <Radio.Button value="b"><FormattedMessage id="Active" /></Radio.Button>
-            <Radio.Button value="c"><FormattedMessage id="Completed" /></Radio.Button>
-          </Radio.Group>
-          <Button onClick={this.clearCompleted} style={{ display: 'float', float: 'right' }}>
-            <FormattedMessage id="clearCompleted" />
-          </Button>
+          <div className={styles.InputBlock}>
+            <Form.Item className={styles.FormItem}>
+              {getFieldDecorator('input')(
+                <Search
+                  placeholder={formatMessage({
+                    id: 'What-needs-to-be-done',
+                  })}
+                  enterButton={formatMessage({
+                    id: 'Add',
+                  })}
+                  size="large"
+                  onSearch={value => this.addEvent(value)}
+                />)}
+            </Form.Item>
+          </div>
+          <div className={styles.OperationBlock} >
+            <div className={styles.StatusBlock}>
+              <Radio.Group onChange={this.onChange} defaultValue="a">
+                <Radio.Button value="a"><FormattedMessage id="All" />({activeLength+completedLength})</Radio.Button>
+                <Radio.Button value="b"><FormattedMessage id="Active" />({activeLength})</Radio.Button>
+                <Radio.Button value="c"><FormattedMessage id="Completed" />({completedLength})</Radio.Button>
+              </Radio.Group>
+            </div>
+            <div className={styles.ClearBlock}>
+              <Popconfirm title={formatMessage({
+                id: 'Sure to clear completed event?',
+              })} onConfirm={this.clearCompleted}>
+                <Button> <FormattedMessage id="clearCompleted" /></Button>
+              </Popconfirm>
+            </div>
+          </div>
+          <div class={styles.ListBlock} >
+            <Table
+              components={components}
+              rowClassName={() => 'editable-row'}
+              bordered={false}
+              pagination={false}
+              scroll={{ y: 300 }}
+              dataSource={eventList}
+              columns={columns}
+              rowSelection={rowSelection}
+            />
+          </div>
         </Form>
       </div>
     );
@@ -325,6 +343,8 @@ class TodoList extends Component {
 
 export default connect(({ todos }) => ({
   eventList: todos.eventList.obj,
+  activeLength:todos.eventList.activeLength,
+  completedLength:todos.eventList.completedLength,
   datachange: todos.datachange,
   loading: todos.loading,
 }))(TodoList)

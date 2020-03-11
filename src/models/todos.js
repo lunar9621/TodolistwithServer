@@ -5,7 +5,9 @@ const TodosModel = {
     eventList: {
       success:"",
       msg:"",
-      obj:[]
+      obj:[],
+      activeLength:0,
+      completedLength:0,
     },
     datachange:{
       success:"",
