@@ -247,7 +247,14 @@ class TodoList extends Component {
           }));
           this.reloadHandler(dispatch);
         } else {
+          if(msg=="暂无已完成事件")
+          {
+            message.error(formatMessage({
+              id: 'No completed events',
+            }));
+          }else{
           message.error(msg);
+          }
         }
       },
     })
